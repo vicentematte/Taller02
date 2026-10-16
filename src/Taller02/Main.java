@@ -3,7 +3,9 @@
 
 package Taller02;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -43,7 +45,7 @@ public class Main {
 			System.out.println("[4] Salir");
 			System.out.println("============================================");
 			System.out.print("Seleccione una opcion: ");
-			
+
 			// Si escribe letras, deja vacio o un numero muy grande, queda en 0 y cae en el default
 			try {
 				opcion = Integer.parseInt(input.nextLine());
@@ -56,7 +58,7 @@ public class Main {
 				verRegistros();
 				break;
 			case 2:
-				System.out.println("Actualizar registros (en construccion)");
+				actualizarRegistros();
 				break;
 			case 3:
 				System.out.println("Calcular metricas (en construccion)");
@@ -70,17 +72,17 @@ public class Main {
 		} while (opcion != 4);
 	}
 
-	// Submenu de Ver registros: muestra choripanes, terremotos o vuelve al menu principal
+	// Muestra el submenu de ver registros y se repite hasta que el usuario elige Volver
 	private static void verRegistros() {
 		int opcion = 0;
 
 		do {
 			System.out.println();
-			System.out.println("============ VER REGISTROS =================");
+			System.out.println("--------------------------------------------");
 			System.out.println("[1] Choripanes");
 			System.out.println("[2] Terremotos");
 			System.out.println("[3] Volver al menu principal");
-			System.out.println("============================================");
+			System.out.println("--------------------------------------------");
 			System.out.print("Seleccione una opcion: ");
 
 			try {
@@ -104,50 +106,191 @@ public class Main {
 		} while (opcion != 3);
 	}
 
-	// Muestra la tabla de choripanes con toda su informacion y sus kcal
+	// Muestra la tabla con todos los choripanes registrados
 	private static void mostrarChoripanes() {
 		System.out.println();
-		System.out.println("=============== CHORIPANES =================");
 		System.out.println("# | Consumidor | Largo | Ancho | Fecha | KCal");
+		System.out.println("--------------------------------------------");
 
 		for (int i = 0; i < cantidadChoripanes; i++) {
 			Choripan c = listaChoripanes[i];
-			System.out.println((i + 1) + " | " + c.getConsumidor() + " | " + Math.round(c.getLargo() * 100) / 100.0 + " cm | "
-					+ Math.round(c.getAncho() * 100) / 100.0 + " cm | " + c.getFecha() + " | " + Math.round(c.calcularKcal() * 100) / 100.0 + " kcal");
+			System.out.println((i + 1) + " | " + c.getConsumidor() + " | " + Math.round(c.getLargo() * 100) / 100.0
+					+ " cm | " + Math.round(c.getAncho() * 100) / 100.0 + " cm | " + c.getFecha() + " | "
+					+ Math.round(c.calcularKcal() * 100) / 100.0);
 		}
 
 		System.out.println("--------------------------------------------");
 		System.out.println("Total: " + cantidadChoripanes + " choripanes registrados");
-		System.out.println("============================================");
-		System.out.print("Presione ENTER para continuar...");
+		System.out.println("Presione ENTER para continuar...");
 		input.nextLine();
 	}
 
-	// Muestra la tabla de terremotos con toda su informacion y sus kcal
+	// Muestra la tabla con todos los terremotos registrados
 	private static void mostrarTerremotos() {
 		double totalLitros = 0;
 
 		System.out.println();
-		System.out.println("=============== TERREMOTOS =================");
 		System.out.println("# | Consumidor | Litros | Fecha | KCal");
+		System.out.println("--------------------------------------------");
 
 		for (int i = 0; i < cantidadTerremotos; i++) {
 			Terremoto t = listaTerremotos[i];
-			System.out.println((i + 1) + " | " + t.getConsumidor() + " | " + Math.round(t.getLitros() * 100) / 100.0 + " L | "
-					+ t.getFecha() + " | " + Math.round(t.calcularKcal() * 100) / 100.0 + " kcal");
 			totalLitros = totalLitros + t.getLitros();
+			System.out.println((i + 1) + " | " + t.getConsumidor() + " | " + Math.round(t.getLitros() * 100) / 100.0
+					+ " L | " + t.getFecha() + " | " + Math.round(t.calcularKcal() * 100) / 100.0);
 		}
 
 		System.out.println("--------------------------------------------");
 		System.out.println("Total: " + cantidadTerremotos + " terremotos registrados (" + Math.round(totalLitros * 100) / 100.0 + " L)");
-		System.out.println("============================================");
-		System.out.print("Presione ENTER para continuar...");
+		System.out.println("Presione ENTER para continuar...");
 		input.nextLine();
 	}
 
+	// Muestra el submenu de actualizar y se repite hasta que el usuario elige Volver
+	private static void actualizarRegistros() {
+		int opcion = 0;
 
+		do {
+			System.out.println();
+			System.out.println("--------------------------------------------");
+			System.out.println("[1] Agregar registro");
+			System.out.println("[2] Editar registro");
+			System.out.println("[3] Eliminar registro");
+			System.out.println("[4] Volver al menu principal");
+			System.out.println("--------------------------------------------");
+			System.out.print("Seleccione una opcion: ");
 
-	// Lee Participantes.txt (un nombre por linea) y los guarda en listaParticipantes
+			try {
+				opcion = Integer.parseInt(input.nextLine());
+			} catch (NumberFormatException e) {
+				opcion = 0;
+			}
+
+			switch (opcion) {
+			case 1:
+				agregarRegistro();
+				break;
+			case 2:
+				System.out.println("Editar registro (en construccion)");
+				break;
+			case 3:
+				System.out.println("Eliminar registro (en construccion)");
+				break;
+			case 4:
+				break;
+			default:
+				System.out.println("Error: debe ingresar un numero entre 1 y 4. Intente nuevamente.");
+			}
+		} while (opcion != 4);
+	}
+
+	// Pregunta si se agrega un choripan o un terremoto
+	private static void agregarRegistro() {
+		int tipo = 0;
+
+		System.out.println("[1] Choripan");
+		System.out.println("[2] Terremoto");
+		System.out.print("Que desea agregar: ");
+
+		try {
+			tipo = Integer.parseInt(input.nextLine());
+		} catch (NumberFormatException e) {
+			tipo = 0;
+		}
+
+		switch (tipo) {
+		case 1:
+			agregarChoripan();
+			break;
+		case 2:
+			agregarTerremoto();
+			break;
+		default:
+			System.out.println("Error: debe ingresar 1 o 2.");
+		}
+	}
+
+	// Pide los datos de un choripan, lo agrega a la lista y guarda el archivo
+	private static void agregarChoripan() {
+
+		if (cantidadChoripanes >= 200) {
+			System.out.println("Error: no hay espacio para mas choripanes.");
+			return;
+		}
+
+		System.out.print("Consumidor: ");
+		String consumidor = input.nextLine();
+
+		if (consumidor.equals("")) {
+			System.out.println("Error: el consumidor no puede estar vacio.");
+			return;
+		}
+
+		try {
+			System.out.print("Largo (cm): ");
+			double largo = Double.parseDouble(input.nextLine());
+			System.out.print("Ancho (cm): ");
+			double ancho = Double.parseDouble(input.nextLine());
+
+			if (largo <= 0 || ancho <= 0) {
+				System.out.println("Error: las medidas deben ser mayores a 0.");
+				return;
+			}
+
+			System.out.print("Fecha: ");
+			String fecha = input.nextLine();
+
+			agregarParticipante(consumidor);
+			listaChoripanes[cantidadChoripanes] = new Choripan(consumidor, largo, ancho, fecha);
+			cantidadChoripanes++;
+			guardarConsumido();
+			System.out.println("Choripan agregado.");
+
+		} catch (NumberFormatException e) {
+			System.out.println("Error: debe ingresar un numero.");
+		}
+	}
+
+	// Pide los datos de un terremoto, lo agrega a la lista y guarda el archivo
+	private static void agregarTerremoto() {
+
+		if (cantidadTerremotos >= 200) {
+			System.out.println("Error: no hay espacio para mas terremotos.");
+			return;
+		}
+
+		System.out.print("Consumidor: ");
+		String consumidor = input.nextLine();
+
+		if (consumidor.equals("")) {
+			System.out.println("Error: el consumidor no puede estar vacio.");
+			return;
+		}
+
+		try {
+			System.out.print("Litros: ");
+			double litros = Double.parseDouble(input.nextLine());
+
+			if (litros <= 0) {
+				System.out.println("Error: los litros deben ser mayores a 0.");
+				return;
+			}
+
+			System.out.print("Fecha: ");
+			String fecha = input.nextLine();
+
+			agregarParticipante(consumidor);
+			listaTerremotos[cantidadTerremotos] = new Terremoto(consumidor, litros, fecha);
+			cantidadTerremotos++;
+			guardarConsumido();
+			System.out.println("Terremoto agregado.");
+
+		} catch (NumberFormatException e) {
+			System.out.println("Error: debe ingresar un numero.");
+		}
+	}
+
+	// Lee Participaciones.txt (un nombre por linea) y los guarda en listaParticipantes
 	private static void leerParticipantes() {
 
 		file = new File("Participaciones.txt");
@@ -158,7 +301,6 @@ public class Main {
 			while (s.hasNextLine()) {
 				String linea = s.nextLine();
 
-				// No pasa de 200 participantes
 				if (cantidadParticipantes < 200) {
 					listaParticipantes[cantidadParticipantes] = linea;
 					cantidadParticipantes++;
@@ -170,7 +312,7 @@ public class Main {
 			System.out.println("No se encontro el archivo 'Participantes.txt'.");
 		}
 	}
-	
+
 	// Lee Consumido.txt y guarda cada linea en listaChoripanes o listaTerremotos
 	private static void leerConsumido() {
 
@@ -241,5 +383,39 @@ public class Main {
 			cantidadParticipantes++;
 		}
 	}
-	
+
+	// Guarda todos los consumos en Consumido.txt (primero los choripanes y luego los terremotos)
+	private static void guardarConsumido() {
+
+		try {
+			BufferedWriter escritor = new BufferedWriter(new FileWriter("Consumido.txt"));
+
+			for (int i = 0; i < cantidadChoripanes; i++) {
+				Choripan c = listaChoripanes[i];
+				escritor.write("Choripan;" + c.getConsumidor() + ";" + numeroParaArchivo(c.getLargo()) + ";"
+						+ numeroParaArchivo(c.getAncho()) + ";" + c.getFecha());
+				escritor.newLine();
+			}
+
+			for (int i = 0; i < cantidadTerremotos; i++) {
+				Terremoto t = listaTerremotos[i];
+				escritor.write("Terremoto;" + t.getConsumidor() + ";" + numeroParaArchivo(t.getLitros()) + ";" + t.getFecha());
+				escritor.newLine();
+			}
+
+			escritor.close();
+
+		} catch (IOException e) {
+			System.out.println("No se pudo guardar el archivo 'Consumido.txt'.");
+		}
+	}
+
+	// Devuelve el numero sin el ".0" si es entero (10.0 -> "10"), para respetar el formato del archivo
+	private static String numeroParaArchivo(double numero) {
+		if (numero == (long) numero) {
+			return String.valueOf((long) numero);
+		}
+		return String.valueOf(numero);
+	}
+
 }
