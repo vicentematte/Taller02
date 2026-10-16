@@ -61,7 +61,7 @@ public class Main {
 				actualizarRegistros();
 				break;
 			case 3:
-				System.out.println("Calcular metricas (en construccion)");
+				eliminarRegistro();
 				break;
 			case 4:
 				System.out.println("Hasta luego...");
@@ -70,6 +70,100 @@ public class Main {
 				System.out.println("Error: debe ingresar un numero entre 1 y 4. Intente nuevamente.");
 			}
 		} while (opcion != 4);
+	}
+
+	// Pregunta si se elimina un choripan o un terremoto
+	private static void eliminarRegistro() {
+		int tipo = 0;
+
+		System.out.println("[1] Choripan");
+		System.out.println("[2] Terremoto");
+		System.out.print("Que desea eliminar: ");
+
+		try {
+			tipo = Integer.parseInt(input.nextLine());
+		} catch (NumberFormatException e) {
+			tipo = 0;
+		}
+
+		switch (tipo) {
+		case 1:
+			eliminarChoripan();
+			break;
+		case 2:
+			eliminarTerremoto();
+			break;
+		default:
+			System.out.println("Error: debe ingresar 1 o 2.");
+		}
+	}
+
+	// Muestra los choripanes, pide el numero de uno y lo elimina de la lista
+	private static void eliminarChoripan() {
+
+		if (cantidadChoripanes == 0) {
+			System.out.println("Error: no hay choripanes registrados.");
+			return;
+		}
+
+		mostrarChoripanes();
+
+		try {
+			System.out.print("Numero del choripan a eliminar: ");
+			int numero = Integer.parseInt(input.nextLine());
+
+			if (numero < 1 || numero > cantidadChoripanes) {
+				System.out.println("Error: el numero debe estar entre 1 y " + cantidadChoripanes + ".");
+				return;
+			}
+
+			// Corre los choripanes siguientes una posicion hacia atras para tapar el espacio
+			for (int i = numero - 1; i < cantidadChoripanes - 1; i++) {
+				listaChoripanes[i] = listaChoripanes[i + 1];
+			}
+			listaChoripanes[cantidadChoripanes - 1] = null;
+			cantidadChoripanes--;
+
+			guardarConsumido();
+			System.out.println("Choripan eliminado.");
+
+		} catch (NumberFormatException e) {
+			System.out.println("Error: debe ingresar un numero.");
+		}
+	}
+
+	// Muestra los terremotos, pide el numero de uno y lo elimina de la lista
+	private static void eliminarTerremoto() {
+
+		if (cantidadTerremotos == 0) {
+			System.out.println("Error: no hay terremotos registrados.");
+			return;
+		}
+
+		mostrarTerremotos();
+
+		try {
+			System.out.print("Numero del terremoto a eliminar: ");
+			int numero = Integer.parseInt(input.nextLine());
+
+			if (numero < 1 || numero > cantidadTerremotos) {
+				System.out.println("Error: el numero debe estar entre 1 y " + cantidadTerremotos + ".");
+				return;
+			}
+
+			// Corre los terremotos siguientes una posicion hacia atras para tapar el espacio
+			for (int i = numero - 1; i < cantidadTerremotos - 1; i++) {
+				listaTerremotos[i] = listaTerremotos[i + 1];
+			}
+			listaTerremotos[cantidadTerremotos - 1] = null;
+			cantidadTerremotos--;
+
+			guardarConsumido();
+			System.out.println("Terremoto eliminado.");
+
+		} catch (NumberFormatException e) {
+			System.out.println("Error: debe ingresar un numero.");
+		}
 	}
 
 	// Muestra el submenu de ver registros y se repite hasta que el usuario elige Volver
@@ -171,7 +265,7 @@ public class Main {
 				agregarRegistro();
 				break;
 			case 2:
-				System.out.println("Editar registro (en construccion)");
+				editarRegistro();
 				break;
 			case 3:
 				System.out.println("Eliminar registro (en construccion)");
@@ -182,6 +276,139 @@ public class Main {
 				System.out.println("Error: debe ingresar un numero entre 1 y 4. Intente nuevamente.");
 			}
 		} while (opcion != 4);
+	}
+
+	// Pregunta si se edita un choripan o un terremoto
+	private static void editarRegistro() {
+		int tipo = 0;
+
+		System.out.println("[1] Choripan");
+		System.out.println("[2] Terremoto");
+		System.out.print("Que desea editar: ");
+
+		try {
+			tipo = Integer.parseInt(input.nextLine());
+		} catch (NumberFormatException e) {
+			tipo = 0;
+		}
+
+		switch (tipo) {
+		case 1:
+			editarChoripan();
+			break;
+		case 2:
+			editarTerremoto();
+			break;
+		default:
+			System.out.println("Error: debe ingresar 1 o 2.");
+		}
+	}
+
+	// Muestra los choripanes, pide el numero de uno y le cambia todos sus datos
+	private static void editarChoripan() {
+
+		if (cantidadChoripanes == 0) {
+			System.out.println("Error: no hay choripanes registrados.");
+			return;
+		}
+
+		mostrarChoripanes();
+
+		try {
+			System.out.print("Numero del choripan a editar: ");
+			int numero = Integer.parseInt(input.nextLine());
+
+			if (numero < 1 || numero > cantidadChoripanes) {
+				System.out.println("Error: el numero debe estar entre 1 y " + cantidadChoripanes + ".");
+				return;
+			}
+
+			System.out.print("Nuevo consumidor: ");
+			String consumidor = input.nextLine();
+
+			if (consumidor.equals("")) {
+				System.out.println("Error: el consumidor no puede estar vacio.");
+				return;
+			}
+
+			System.out.print("Nuevo largo (cm): ");
+			double largo = Double.parseDouble(input.nextLine());
+			System.out.print("Nuevo ancho (cm): ");
+			double ancho = Double.parseDouble(input.nextLine());
+
+			if (largo <= 0 || ancho <= 0) {
+				System.out.println("Error: las medidas deben ser mayores a 0.");
+				return;
+			}
+
+			System.out.print("Nueva fecha: ");
+			String fecha = input.nextLine();
+
+			Choripan c = listaChoripanes[numero - 1];
+			c.setConsumidor(consumidor);
+			c.setLargo(largo);
+			c.setAncho(ancho);
+			c.setFecha(fecha);
+
+			agregarParticipante(consumidor);
+			guardarConsumido();
+			System.out.println("Choripan editado.");
+
+		} catch (NumberFormatException e) {
+			System.out.println("Error: debe ingresar un numero.");
+		}
+	}
+
+	// Muestra los terremotos, pide el numero de uno y le cambia todos sus datos
+	private static void editarTerremoto() {
+
+		if (cantidadTerremotos == 0) {
+			System.out.println("Error: no hay terremotos registrados.");
+			return;
+		}
+
+		mostrarTerremotos();
+
+		try {
+			System.out.print("Numero del terremoto a editar: ");
+			int numero = Integer.parseInt(input.nextLine());
+
+			if (numero < 1 || numero > cantidadTerremotos) {
+				System.out.println("Error: el numero debe estar entre 1 y " + cantidadTerremotos + ".");
+				return;
+			}
+
+			System.out.print("Nuevo consumidor: ");
+			String consumidor = input.nextLine();
+
+			if (consumidor.equals("")) {
+				System.out.println("Error: el consumidor no puede estar vacio.");
+				return;
+			}
+
+			System.out.print("Nuevos litros: ");
+			double litros = Double.parseDouble(input.nextLine());
+
+			if (litros <= 0) {
+				System.out.println("Error: los litros deben ser mayores a 0.");
+				return;
+			}
+
+			System.out.print("Nueva fecha: ");
+			String fecha = input.nextLine();
+
+			Terremoto t = listaTerremotos[numero - 1];
+			t.setConsumidor(consumidor);
+			t.setLitros(litros);
+			t.setFecha(fecha);
+
+			agregarParticipante(consumidor);
+			guardarConsumido();
+			System.out.println("Terremoto editado.");
+
+		} catch (NumberFormatException e) {
+			System.out.println("Error: debe ingresar un numero.");
+		}
 	}
 
 	// Pregunta si se agrega un choripan o un terremoto
@@ -293,7 +520,7 @@ public class Main {
 	// Lee Participaciones.txt (un nombre por linea) y los guarda en listaParticipantes
 	private static void leerParticipantes() {
 
-		file = new File("Participaciones.txt");
+		file = new File("Participantes.txt");
 
 		try {
 			s = new Scanner(file);
@@ -417,5 +644,7 @@ public class Main {
 		}
 		return String.valueOf(numero);
 	}
+	
+	
 
 }
