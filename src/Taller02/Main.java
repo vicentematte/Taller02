@@ -78,6 +78,7 @@ public class Main {
 
 		System.out.println("[1] Choripan");
 		System.out.println("[2] Terremoto");
+		System.out.println("[3] Cancelar");
 		System.out.print("Que desea eliminar: ");
 
 		try {
@@ -93,8 +94,10 @@ public class Main {
 		case 2:
 			eliminarTerremoto();
 			break;
+		case 3:
+			break;
 		default:
-			System.out.println("Error: debe ingresar 1 o 2.");
+			System.out.println("Error: debe ingresar un numero entre 1 y 3.");
 		}
 	}
 
@@ -109,8 +112,13 @@ public class Main {
 		mostrarChoripanes();
 
 		try {
-			System.out.print("Numero del choripan a eliminar: ");
+			System.out.print("Numero del choripan a eliminar (0 para cancelar): ");
 			int numero = Integer.parseInt(input.nextLine());
+
+			if (numero == 0) {
+				System.out.println("Eliminacion cancelada.");
+				return;
+			}
 
 			if (numero < 1 || numero > cantidadChoripanes) {
 				System.out.println("Error: el numero debe estar entre 1 y " + cantidadChoripanes + ".");
@@ -119,6 +127,17 @@ public class Main {
 
 			// Guarda el choripan para mostrar cual se elimino
 			Choripan eliminado = listaChoripanes[numero - 1];
+
+			// Pide confirmacion antes de borrar
+			System.out.print("Confirma la eliminacion de \"Choripan | " + eliminado.getConsumidor() + " | "
+					+ numeroParaArchivo(eliminado.getLargo()) + " cm x " + numeroParaArchivo(eliminado.getAncho())
+					+ " cm | " + eliminado.getFecha() + "\"? (s/n): ");
+			String respuesta = input.nextLine();
+
+			if (!respuesta.equalsIgnoreCase("s")) {
+				System.out.println("Eliminacion cancelada.");
+				return;
+			}
 
 			// Corre los choripanes siguientes una posicion hacia atras para tapar el espacio
 			for (int i = numero - 1; i < cantidadChoripanes - 1; i++) {
@@ -148,8 +167,13 @@ public class Main {
 		mostrarTerremotos();
 
 		try {
-			System.out.print("Numero del terremoto a eliminar: ");
+			System.out.print("Numero del terremoto a eliminar (0 para cancelar): ");
 			int numero = Integer.parseInt(input.nextLine());
+
+			if (numero == 0) {
+				System.out.println("Eliminacion cancelada.");
+				return;
+			}
 
 			if (numero < 1 || numero > cantidadTerremotos) {
 				System.out.println("Error: el numero debe estar entre 1 y " + cantidadTerremotos + ".");
@@ -158,6 +182,16 @@ public class Main {
 
 			// Guarda el terremoto para mostrar cual se elimino
 			Terremoto eliminado = listaTerremotos[numero - 1];
+
+			// Pide confirmacion antes de borrar
+			System.out.print("Confirma la eliminacion de \"Terremoto | " + eliminado.getConsumidor() + " | "
+					+ numeroParaArchivo(eliminado.getLitros()) + " L | " + eliminado.getFecha() + "\"? (s/n): ");
+			String respuesta = input.nextLine();
+
+			if (!respuesta.equalsIgnoreCase("s")) {
+				System.out.println("Eliminacion cancelada.");
+				return;
+			}
 
 			// Corre los terremotos siguientes una posicion hacia atras para tapar el espacio
 			for (int i = numero - 1; i < cantidadTerremotos - 1; i++) {
