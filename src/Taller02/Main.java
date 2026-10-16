@@ -61,7 +61,7 @@ public class Main {
 				actualizarRegistros();
 				break;
 			case 3:
-				eliminarRegistro();
+				System.out.println("Calcular metricas (en construccion)");
 				break;
 			case 4:
 				System.out.println("Hasta luego...");
@@ -117,6 +117,9 @@ public class Main {
 				return;
 			}
 
+			// Guarda el choripan para mostrar cual se elimino
+			Choripan eliminado = listaChoripanes[numero - 1];
+
 			// Corre los choripanes siguientes una posicion hacia atras para tapar el espacio
 			for (int i = numero - 1; i < cantidadChoripanes - 1; i++) {
 				listaChoripanes[i] = listaChoripanes[i + 1];
@@ -125,7 +128,9 @@ public class Main {
 			cantidadChoripanes--;
 
 			guardarConsumido();
-			System.out.println("Choripan eliminado.");
+			System.out.println("Choripan eliminado: " + eliminado.getConsumidor() + " | "
+					+ numeroParaArchivo(eliminado.getLargo()) + " cm x " + numeroParaArchivo(eliminado.getAncho())
+					+ " cm | " + eliminado.getFecha());
 
 		} catch (NumberFormatException e) {
 			System.out.println("Error: debe ingresar un numero.");
@@ -151,6 +156,9 @@ public class Main {
 				return;
 			}
 
+			// Guarda el terremoto para mostrar cual se elimino
+			Terremoto eliminado = listaTerremotos[numero - 1];
+
 			// Corre los terremotos siguientes una posicion hacia atras para tapar el espacio
 			for (int i = numero - 1; i < cantidadTerremotos - 1; i++) {
 				listaTerremotos[i] = listaTerremotos[i + 1];
@@ -159,7 +167,8 @@ public class Main {
 			cantidadTerremotos--;
 
 			guardarConsumido();
-			System.out.println("Terremoto eliminado.");
+			System.out.println("Terremoto eliminado: " + eliminado.getConsumidor() + " | "
+					+ numeroParaArchivo(eliminado.getLitros()) + " L | " + eliminado.getFecha());
 
 		} catch (NumberFormatException e) {
 			System.out.println("Error: debe ingresar un numero.");
@@ -215,8 +224,6 @@ public class Main {
 
 		System.out.println("--------------------------------------------");
 		System.out.println("Total: " + cantidadChoripanes + " choripanes registrados");
-		System.out.println("Presione ENTER para continuar...");
-		input.nextLine();
 	}
 
 	// Muestra la tabla con todos los terremotos registrados
@@ -236,8 +243,6 @@ public class Main {
 
 		System.out.println("--------------------------------------------");
 		System.out.println("Total: " + cantidadTerremotos + " terremotos registrados (" + Math.round(totalLitros * 100) / 100.0 + " L)");
-		System.out.println("Presione ENTER para continuar...");
-		input.nextLine();
 	}
 
 	// Muestra el submenu de actualizar y se repite hasta que el usuario elige Volver
@@ -268,7 +273,7 @@ public class Main {
 				editarRegistro();
 				break;
 			case 3:
-				System.out.println("Eliminar registro (en construccion)");
+				eliminarRegistro();
 				break;
 			case 4:
 				break;
@@ -517,7 +522,7 @@ public class Main {
 		}
 	}
 
-	// Lee Participaciones.txt (un nombre por linea) y los guarda en listaParticipantes
+	// Lee Participantes.txt (un nombre por linea) y los guarda en listaParticipantes
 	private static void leerParticipantes() {
 
 		file = new File("Participantes.txt");
@@ -644,7 +649,5 @@ public class Main {
 		}
 		return String.valueOf(numero);
 	}
-	
-	
 
 }
