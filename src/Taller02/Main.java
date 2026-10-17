@@ -61,7 +61,7 @@ public class Main {
 				actualizarRegistros();
 				break;
 			case 3:
-				System.out.println("Calcular metricas (en construccion)");
+				calcularMetricas();
 				break;
 			case 4:
 				System.out.println("Hasta luego...");
@@ -70,6 +70,93 @@ public class Main {
 				System.out.println("Error: debe ingresar un numero entre 1 y 4. Intente nuevamente.");
 			}
 		} while (opcion != 4);
+	}
+
+	// Muestra el submenu de metricas y se repite hasta que el usuario elige Volver
+	private static void calcularMetricas() {
+		int opcion = 0;
+
+		do {
+			System.out.println();
+			System.out.println("--------------------------------------------");
+			System.out.println("[1] Choripanes comidos en total");
+			System.out.println("[2] Terremotos tomados en total");
+			System.out.println("[3] Choripanes comidos por usuario");
+			System.out.println("[4] Terremotos tomados por usuario");
+			System.out.println("[5] KCal consumidas por usuario");
+			System.out.println("[6] Dias ebrio por usuario");
+			System.out.println("[7] Volver al menu principal");
+			System.out.println("--------------------------------------------");
+			System.out.print("Seleccione una opcion: ");
+
+			try {
+				opcion = Integer.parseInt(input.nextLine());
+			} catch (NumberFormatException e) {
+				opcion = 0;
+			}
+
+			switch (opcion) {
+			case 1:
+				totalChoripanes();
+				break;
+			case 2:
+				totalTerremotos();
+				break;
+			case 3:
+				choripanesPorUsuario();
+				break;
+			case 4:
+				System.out.println("Terremotos por usuario (en construccion)");
+				break;
+			case 5:
+				System.out.println("KCal por usuario (en construccion)");
+				break;
+			case 6:
+				System.out.println("Dias ebrio por usuario (en construccion)");
+				break;
+			//por temas de tiempo las opciones 4,5 7 6 quedaran incompletas, lo siento a quien revise esto...
+			case 7:
+				break;
+			default:
+				System.out.println("Error: debe ingresar un numero entre 1 y 7. Intente nuevamente.");
+			}
+		} while (opcion != 7);
+	}
+
+	// Muestra cuantos choripanes se han comido en total
+	private static void totalChoripanes() {
+		System.out.println("Total de choripanes comidos: " + cantidadChoripanes);
+	}
+
+	// Muestra cuantos terremotos se han tomado en total y cuantos litros suman
+	private static void totalTerremotos() {
+		double totalLitros = 0;
+
+		for (int i = 0; i < cantidadTerremotos; i++) {
+			totalLitros = totalLitros + listaTerremotos[i].getLitros();
+		}
+
+		System.out.println("Total de terremotos tomados: " + cantidadTerremotos + " ("
+				+ Math.round(totalLitros * 100) / 100.0 + " litros en total)");
+	}
+
+	// Muestra cuantos choripanes comio cada participante
+	private static void choripanesPorUsuario() {
+		System.out.println();
+		System.out.println("Usuario | Cantidad");
+		System.out.println("--------------------------------------------");
+
+		for (int i = 0; i < cantidadParticipantes; i++) {
+			int cantidad = 0;
+
+			for (int j = 0; j < cantidadChoripanes; j++) {
+				if (listaChoripanes[j].getConsumidor().equalsIgnoreCase(listaParticipantes[i])) {
+					cantidad++;
+				}
+			}
+
+			System.out.println(listaParticipantes[i] + " | " + cantidad);
+		}
 	}
 
 	// Pregunta si se elimina un choripan o un terremoto
@@ -130,7 +217,7 @@ public class Main {
 
 			// Pide confirmacion antes de borrar
 			System.out.print("Confirma la eliminacion de \"Choripan | " + eliminado.getConsumidor() + " | "
-					+ numeroParaArchivo(eliminado.getLargo()) + " cm x " + numeroParaArchivo(eliminado.getAncho())
+					+ eliminado.getLargo() + " cm x " + eliminado.getAncho()
 					+ " cm | " + eliminado.getFecha() + "\"? (s/n): ");
 			String respuesta = input.nextLine();
 
@@ -148,7 +235,7 @@ public class Main {
 
 			guardarConsumido();
 			System.out.println("Choripan eliminado: " + eliminado.getConsumidor() + " | "
-					+ numeroParaArchivo(eliminado.getLargo()) + " cm x " + numeroParaArchivo(eliminado.getAncho())
+					+ eliminado.getLargo() + " cm x " + eliminado.getAncho()
 					+ " cm | " + eliminado.getFecha());
 
 		} catch (NumberFormatException e) {
@@ -185,7 +272,7 @@ public class Main {
 
 			// Pide confirmacion antes de borrar
 			System.out.print("Confirma la eliminacion de \"Terremoto | " + eliminado.getConsumidor() + " | "
-					+ numeroParaArchivo(eliminado.getLitros()) + " L | " + eliminado.getFecha() + "\"? (s/n): ");
+					+ eliminado.getLitros() + " L | " + eliminado.getFecha() + "\"? (s/n): ");
 			String respuesta = input.nextLine();
 
 			if (!respuesta.equalsIgnoreCase("s")) {
@@ -202,7 +289,7 @@ public class Main {
 
 			guardarConsumido();
 			System.out.println("Terremoto eliminado: " + eliminado.getConsumidor() + " | "
-					+ numeroParaArchivo(eliminado.getLitros()) + " L | " + eliminado.getFecha());
+					+ eliminado.getLitros() + " L | " + eliminado.getFecha());
 
 		} catch (NumberFormatException e) {
 			System.out.println("Error: debe ingresar un numero.");
@@ -658,14 +745,14 @@ public class Main {
 
 			for (int i = 0; i < cantidadChoripanes; i++) {
 				Choripan c = listaChoripanes[i];
-				escritor.write("Choripan;" + c.getConsumidor() + ";" + numeroParaArchivo(c.getLargo()) + ";"
-						+ numeroParaArchivo(c.getAncho()) + ";" + c.getFecha());
+				escritor.write("Choripan;" + c.getConsumidor() + ";" + c.getLargo() + ";"
+						+ c.getAncho() + ";" + c.getFecha());
 				escritor.newLine();
 			}
 
 			for (int i = 0; i < cantidadTerremotos; i++) {
 				Terremoto t = listaTerremotos[i];
-				escritor.write("Terremoto;" + t.getConsumidor() + ";" + numeroParaArchivo(t.getLitros()) + ";" + t.getFecha());
+				escritor.write("Terremoto;" + t.getConsumidor() + ";" + t.getLitros() + ";" + t.getFecha());
 				escritor.newLine();
 			}
 
@@ -676,12 +763,6 @@ public class Main {
 		}
 	}
 
-	// Devuelve el numero sin el ".0" si es entero (10.0 -> "10"), para respetar el formato del archivo
-	private static String numeroParaArchivo(double numero) {
-		if (numero == (long) numero) {
-			return String.valueOf((long) numero);
-		}
-		return String.valueOf(numero);
-	}
+
 
 }
